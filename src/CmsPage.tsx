@@ -16,10 +16,14 @@ export const renderCMSPage = (routes: WagtailRouterConfig, pageType: string) => 
 }
 
 export const getCMSProps: GetServerSideProps<WagtailProps> = async (context) => {
-    const pathname = "/us/";
-    const res = await fetch(
-      `https://api-dev.devatech.us/api/v2/pages/find/?site=2&html_path=${pathname}`,
-    );
+    const pathname = "/";
+    const params = {
+        "html_path": pathname,
+        "site": "2"
+    };
+    let url = new URL("http://localhost:8000/api/v2/pages/detail_by_path/")
+    url.search = new URLSearchParams(params).toString();
+    const res = await fetch(url.toString());
     if (res.status === 404) {
         context.res.writeHead(301, {Location: "https://www.google.com"});
         context.res.end();

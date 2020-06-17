@@ -1,10 +1,10 @@
 // import fetch from 'node-fetch';
 import { GetServerSideProps } from 'next';
 
-const HomePage = (props: unknown) => {
+const FooPage = (props: unknown) => {
   return (
     <div>
-      home hi
+      hi Foo
       <pre>
         <code>{JSON.stringify(props, null, 2)}</code>
       </pre>
@@ -20,4 +20,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default HomePage;
+export default FooPage;
