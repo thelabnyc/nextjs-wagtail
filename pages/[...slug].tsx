@@ -6,11 +6,11 @@ import { WagtailRouterConfig, WagtailProps } from '../src/interfaces';
 const cmsPageRouter: WagtailRouterConfig = [
     {
         type: "sandbox.BarPage",
-        component: dynamic(() => import("../components/wagtail/cms.BarPage")),
+        component: dynamic(() => import("../components/wagtail/sandbox.BarPage")),
     },
     {
         type: "sandbox.FooPage",
-        component: dynamic(() => import("../components/wagtail/cms.FooPage")),
+        component: dynamic(() => import("../components/wagtail/sandbox.FooPage")),
     }
 ];
 

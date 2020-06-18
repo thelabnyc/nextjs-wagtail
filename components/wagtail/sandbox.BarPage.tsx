@@ -5,7 +5,7 @@ const BarPage = (props: unknown) => {
   return (
     <div>
       hi bar
-      <Link href="/foo" prefetch={false}>Go to foo</Link>
+      <Link href="/[...slug]" as="/foo"><a>Go to foo</a></Link>
       <pre>
         <code>{JSON.stringify(props, null, 2)}</code>
       </pre>
