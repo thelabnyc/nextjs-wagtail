@@ -1,12 +1,11 @@
 import { ComponentType } from "react";
 
 export interface WagtailRoute {
-    type: string;
-    component: ComponentType<unknown>
+  type: string;
+  component: ComponentType<unknown>;
 }
 
 export type WagtailRouterConfig = WagtailRoute[];
-
 
 interface WagtailMeta {
   type: string;
@@ -37,5 +36,5 @@ export interface WagtailPageDetail extends WagtailPageBase {
 }
 
 export interface WagtailProps {
-    wagtail: WagtailPageDetail
+  wagtail: WagtailPageDetail;
 }
