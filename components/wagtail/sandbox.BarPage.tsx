@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import Link from "next/link";
 
 const BarPage = (props: unknown) => {
@@ -14,14 +13,6 @@ const BarPage = (props: unknown) => {
       baaaaaaaaaaaaaaaaaaar
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return {
-    props: {
-      cmsData: context.query.wagtailData,
-    },
-  };
 };
 
 export default BarPage;

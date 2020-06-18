@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import Link from "next/link";
 
 const FooPage = (props: unknown) => {
@@ -16,12 +15,10 @@ const FooPage = (props: unknown) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps() {
   return {
-    props: {
-      cmsData: context.query.wagtailData,
-    },
+    myProp: 2,
   };
-};
+}
 
 export default FooPage;
