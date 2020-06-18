@@ -16,6 +16,8 @@ const Page = createRouter([
 /* If you need to customize page:
 
 const CustomPage = (props: WagtailProps) => {
+  if (props.status >= 200) return <NextError statusCode={props.status} />
+
   return (
     <div>
       <h1>hi</h1>
