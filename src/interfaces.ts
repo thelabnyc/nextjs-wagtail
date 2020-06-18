@@ -42,6 +42,7 @@ interface FoundWagtailProps {
   status: 200;
 }
 
+// I want to just make this "number" but it makes WagtailProps not a discriminated union
 interface NotFoundWagtailProps {
   status: 404 | 500;
 }
