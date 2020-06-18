@@ -13,6 +13,10 @@ const { CMSPage, getCMSProps } = createRouter({
     {
       type: "sandbox.FooPage",
       component: dynamic(() => import("../components/wagtail/sandbox.FooPage")),
+      fetchData: () =>
+        import("../components/wagtail/sandbox.FooPage").then((x) =>
+          x.getServerSideProps()
+        ),
     },
   ],
 });
