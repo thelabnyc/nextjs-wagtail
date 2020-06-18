@@ -16,12 +16,21 @@ export const renderCMSPage = (routes: WagtailRouterConfig, pageType: string) => 
 }
 
 export const getCMSProps: GetServerSideProps<WagtailProps> = async (context) => {
-    const pathname = "/";
+    const slug = context.query?.slug;
+    let path: string = "/";
+    if (Array.isArray(slug)) {
+        path += slug.join('/');
+    } else {
+        path += slug;
+    }
+    const siteId = "2";
+    const domain = "http://localhost:8000";
+    const apiPath  = "/api/v2/pages/detail_by_path/";
     const params = {
-        "html_path": pathname,
-        "site": "2"
+        "html_path": path,
+        "site": siteId
     };
-    let url = new URL("http://localhost:8000/api/v2/pages/detail_by_path/")
+    let url = new URL(domain + apiPath)
     url.search = new URLSearchParams(params).toString();
     const res = await fetch(url.toString());
     if (res.status === 404) {
