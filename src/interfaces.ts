@@ -35,6 +35,13 @@ export interface WagtailPageDetail extends WagtailPageBase {
   meta: WagtailMetaDetail;
 }
 
-export interface WagtailProps {
+export type WagtailProps = FoundWagtailProps | NotFoundWagtailProps;
+
+interface FoundWagtailProps {
   wagtail: WagtailPageDetail;
+  status: 200;
+}
+
+interface NotFoundWagtailProps {
+  status: 404 | 500;
 }

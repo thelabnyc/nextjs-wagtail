@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import NextError from "next/error";
 import {
   WagtailRouterConfig,
   WagtailPageDetail,
@@ -11,13 +12,17 @@ const routeToComponent = (routes: WagtailRouterConfig, pageType: string) => {
 };
 
 export function createRouter(routes: WagtailRouterConfig) {
-  return function CMSPage({ wagtail }: WagtailProps) {
-    const CMSComponent = routeToComponent(routes, wagtail.meta.type);
+  return function CMSPage(props: WagtailProps) {
+    if (props.status === 200) {
+      const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
 
-    if (CMSComponent) {
-      return <CMSComponent />;
+      if (CMSComponent) {
+        return <CMSComponent />;
+      }
+      return <NextError statusCode={404} />;
+    } else {
+      return <NextError statusCode={props.status} />;
     }
-    return <h1>Hello not found</h1>;
   };
 }
 
@@ -43,10 +48,11 @@ export const getCMSProps: GetServerSideProps<WagtailProps> = async (
   let url = new URL(domain + apiPath);
   url.search = new URLSearchParams(params).toString();
   const res = await fetch(url.toString());
+  // We should handle other status codes than 200 and 404!
   if (res.status === 404) {
-    context.res.writeHead(404);
-    return { props: {} as any };
+    context.res.statusCode = 404;
+    return { props: { status: 404 } };
   }
   const data: WagtailPageDetail = await res.json();
-  return { props: { wagtail: data } };
+  return { props: { wagtail: data, status: 200 } };
 };
