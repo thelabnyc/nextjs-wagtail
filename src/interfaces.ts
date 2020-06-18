@@ -5,7 +5,7 @@ export interface WagtailRoute {
   component: ComponentType<unknown>;
 }
 
-export type WagtailRouterConfig = WagtailRoute[];
+export type WagtailRoutes = WagtailRoute[];
 
 interface WagtailMeta {
   type: string;
