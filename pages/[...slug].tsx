@@ -1,9 +1,8 @@
 import dynamic from "next/dynamic";
 import { GetServerSideProps } from "next";
 import { getCMSProps, createRouter } from "../src/CmsPage";
-import { WagtailRouterConfig } from "../src/interfaces";
 
-const cmsPageRouter: WagtailRouterConfig = [
+const Page = createRouter([
   {
     type: "sandbox.BarPage",
     component: dynamic(() => import("../components/wagtail/sandbox.BarPage")),
@@ -12,9 +11,7 @@ const cmsPageRouter: WagtailRouterConfig = [
     type: "sandbox.FooPage",
     component: dynamic(() => import("../components/wagtail/sandbox.FooPage")),
   },
-];
-
-const Page = createRouter(cmsPageRouter);
+]);
 
 /* If you need to customize page:
 
