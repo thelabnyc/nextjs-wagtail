@@ -18,10 +18,12 @@ export const renderCMSPage = (routes: WagtailRouterConfig, pageType: string) => 
 export const getCMSProps: GetServerSideProps<WagtailProps> = async (context) => {
     const slug = context.query?.slug;
     let path: string = "/";
-    if (Array.isArray(slug)) {
-        path += slug.join('/');
-    } else {
-        path += slug;
+    if (slug) {
+        if (Array.isArray(slug)) {
+            path += slug.join('/');
+        } else {
+            path += slug;
+        }
     }
     const siteId = "2";
     const domain = "http://localhost:8000";
