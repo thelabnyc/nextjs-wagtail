@@ -10,17 +10,16 @@ const routeToComponent = (routes: WagtailRouterConfig, pageType: string) => {
   return route?.component;
 };
 
-export const renderCMSPage = (
-  routes: WagtailRouterConfig,
-  pageType: string
-) => {
-  const CMSComponent = routeToComponent(routes, pageType);
+export function createRouter(routes: WagtailRouterConfig) {
+  return function CMSPage({ wagtail }: WagtailProps) {
+    const CMSComponent = routeToComponent(routes, wagtail.meta.type);
 
-  if (CMSComponent) {
-    return <CMSComponent />;
-  }
-  return <h1>Hello not found</h1>;
-};
+    if (CMSComponent) {
+      return <CMSComponent />;
+    }
+    return <h1>Hello not found</h1>;
+  };
+}
 
 export const getCMSProps: GetServerSideProps<WagtailProps> = async (
   context
@@ -45,8 +44,8 @@ export const getCMSProps: GetServerSideProps<WagtailProps> = async (
   url.search = new URLSearchParams(params).toString();
   const res = await fetch(url.toString());
   if (res.status === 404) {
-    context.res.writeHead(301, { Location: "https://www.google.com" });
-    context.res.end();
+    context.res.writeHead(404);
+    return { props: {} as any };
   }
   const data: WagtailPageDetail = await res.json();
   return { props: { wagtail: data } };
