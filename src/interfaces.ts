@@ -3,6 +3,7 @@ import { ComponentType } from "react";
 export interface WagtailRoute {
   type: string;
   component: ComponentType<unknown>;
+  fetchData?: () => Promise<unknown>;
 }
 
 export type WagtailRoutes = WagtailRoute[];

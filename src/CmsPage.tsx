@@ -7,6 +7,11 @@ const routeToComponent = (routes: WagtailRoutes, pageType: string) => {
   return route?.component;
 };
 
+const routeToDataFunction = (routes: WagtailRoutes, pageType: string) => {
+  const route = routes.find((route) => route.type === pageType);
+  return route?.fetchData;
+};
+
 export interface WagtailRouterConfig {
   routes: WagtailRoutes;
   siteId: number;
@@ -22,10 +27,13 @@ export function createRouter({
 }: WagtailRouterConfig) {
   function CMSPage(props: WagtailProps) {
     if (props.status === 200) {
-      const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
+      const CMSComponent: any = routeToComponent(
+        routes,
+        props.wagtail.meta.type
+      );
 
       if (CMSComponent) {
-        return <CMSComponent />;
+        return <CMSComponent {...props} />;
       }
       return <NextError statusCode={404} />;
     } else {
@@ -56,7 +64,14 @@ export function createRouter({
       return { props: { status: 404 } };
     }
     const data: WagtailPageDetail = await res.json();
-    return { props: { wagtail: data, status: 200 } };
+
+    const fetchAdditionalData = routeToDataFunction(routes, data.meta.type);
+    let extraProps: any;
+    if (fetchAdditionalData) {
+      extraProps = await fetchAdditionalData();
+    }
+
+    return { props: { ...extraProps, wagtail: data, status: 200 } };
   };
 
   return { CMSPage, getCMSProps };
