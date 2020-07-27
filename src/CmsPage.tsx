@@ -17,6 +17,7 @@ export interface WagtailRouterConfig {
   siteId: number;
   domain: string;
   apiPath?: string;
+  previewPath?: string;
 }
 
 export function createRouter({
@@ -24,6 +25,7 @@ export function createRouter({
   siteId,
   domain,
   apiPath = "/api/v2/pages/detail_by_path/",
+  previewPath = "/api/v2/page_preview/1/",
 }: WagtailRouterConfig) {
   function CMSPage(props: WagtailProps) {
     if (props.status === 200) {
@@ -74,5 +76,33 @@ export function createRouter({
     return { props: { ...extraProps, wagtail: data, status: 200 } };
   };
 
-  return { CMSPage, getCMSProps };
+  const getPreviewProps: GetServerSideProps<WagtailProps> = async (context) => {
+    let url = new URL(domain + previewPath);
+    url.search = new URLSearchParams({
+      format: "json",
+      content_type: context.query.content_type as string,
+      token: context.query.token as string,
+    }).toString();
+    const previewDataResponse = await fetch(url.toString());
+    try {
+      const previewData = await previewDataResponse.json();
+
+      const fetchAdditionalData = routeToDataFunction(
+        routes,
+        previewData.meta.type
+      );
+      let extraProps: any;
+      if (fetchAdditionalData) {
+        extraProps = await fetchAdditionalData();
+      }
+
+      return {
+        props: { ...extraProps, wagtail: previewData, status: 200 },
+      };
+    } catch (e) {
+      return { props: { wagtail: null, status: 404 } };
+    }
+  };
+
+  return { CMSPage, getCMSProps, getPreviewProps };
 }

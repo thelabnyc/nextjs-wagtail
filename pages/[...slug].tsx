@@ -1,25 +1,4 @@
-import dynamic from "next/dynamic";
-import { GetServerSideProps } from "next";
-import { createRouter } from "../src/CmsPage";
-
-const { CMSPage, getCMSProps } = createRouter({
-  siteId: 2,
-  domain: "http://localhost:8000",
-  routes: [
-    {
-      type: "sandbox.BarPage",
-      component: dynamic(() => import("../components/wagtail/sandbox.BarPage")),
-    },
-    {
-      type: "sandbox.FooPage",
-      component: dynamic(() => import("../components/wagtail/sandbox.FooPage")),
-      fetchData: () =>
-        import("../components/wagtail/sandbox.FooPage").then((x) =>
-          x.getServerSideProps()
-        ),
-    },
-  ],
-});
+import { CMSPage, getCMSProps } from "../wagtailConf";
 
 /* If you need to customize page:
 
@@ -52,4 +31,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 */
-export const getServerSideProps: GetServerSideProps = getCMSProps;
+export const getServerSideProps = getCMSProps;
