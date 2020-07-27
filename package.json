@@ -1,11 +1,11 @@
 {
   "name": "nextjs-wagtail",
   "source": "src/index.tsx",
-  "main": "dist/nextjs-wagtail.js",
-  "module": "dist/nextjs-wagtail.module.js",
-  "unpkg": "dist/nextjs-wagtail.umd.js",
-  "types": "dist/nextjs-wagtail.d.ts",
-  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "version": "0.1.1",
   "scripts": {
     "dev": "next",
     "app:build": "next build",

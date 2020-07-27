@@ -1,0 +1,9 @@
+pages
+public
+components
+wagtailConf.ts
+next-env.d.ts
+.next
+.editorconfig
+.prettierignore
+.prettierrc
