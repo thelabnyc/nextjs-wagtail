@@ -1,23 +1,30 @@
 {
-  "name": "la-aurora",
-  "version": "1.0.0",
+  "name": "nextjs-wagtail",
+  "source": "src/index.tsx",
+  "main": "dist/nextjs-wagtail.js",
+  "module": "dist/nextjs-wagtail.module.js",
+  "unpkg": "dist/nextjs-wagtail.umd.js",
+  "types": "dist/nextjs-wagtail.d.ts",
+  "version": "0.1.0",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "app:build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "lib:start": "microbundle watch --tsconfig ./tsconfig.lib.json --jsx React.createElement",
+    "lib:build": "microbundle --tsconfig ./tsconfig.lib.json --jsx React.createElement"
   },
-  "dependencies": {
-    "next": "^9.4.4",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
+    "microbundle": "^0.12.3",
+    "next": "^9.4.4",
     "prettier": "^2.0.5",
-    "typescript": "3.7.3"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "typescript": "^3.9.7"
   },
   "license": "ISC"
 }

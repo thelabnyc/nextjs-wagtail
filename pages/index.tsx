@@ -1,4 +1,4 @@
-import { CMSPage, getCMSProps } from "../wagtailConf";
+import { CMSPage, getCMSProps } from '../wagtailConf';
 
 export default CMSPage;
 export const getServerSideProps = getCMSProps;

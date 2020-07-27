@@ -1,15 +1,16 @@
-import { GetServerSideProps } from "next";
-import NextError from "next/error";
-import { WagtailRoutes, WagtailPageDetail, WagtailProps } from "./interfaces";
+import * as React from 'react';
+import { GetServerSideProps } from 'next';
+import NextError from 'next/error';
+import { WagtailRoutes, WagtailPageDetail, WagtailProps } from './interfaces';
 
 const routeToComponent = (routes: WagtailRoutes, pageType: string) => {
   const route = routes.find((route) => route.type === pageType);
-  return route?.component;
+  return (route && route.component) || null;
 };
 
 const routeToDataFunction = (routes: WagtailRoutes, pageType: string) => {
   const route = routes.find((route) => route.type === pageType);
-  return route?.fetchData;
+  return (route && route.fetchData) || null;
 };
 
 export interface WagtailRouterConfig {
@@ -24,8 +25,8 @@ export function createRouter({
   routes = [],
   siteId,
   domain,
-  apiPath = "/api/v2/pages/detail_by_path/",
-  previewPath = "/api/v2/page_preview/1/",
+  apiPath = '/api/v2/pages/detail_by_path/',
+  previewPath = '/api/v2/page_preview/1/',
 }: WagtailRouterConfig) {
   function CMSPage(props: WagtailProps) {
     if (props.status === 200) {
@@ -44,11 +45,11 @@ export function createRouter({
   }
 
   const getCMSProps: GetServerSideProps<WagtailProps> = async (context) => {
-    const slug = context.query?.slug;
-    let path: string = "/";
+    const slug = context.query.slug;
+    let path: string = '/';
     if (slug) {
       if (Array.isArray(slug)) {
-        path += slug.join("/");
+        path += slug.join('/');
       } else {
         path += slug;
       }
@@ -79,7 +80,7 @@ export function createRouter({
   const getPreviewProps: GetServerSideProps<WagtailProps> = async (context) => {
     let url = new URL(domain + previewPath);
     url.search = new URLSearchParams({
-      format: "json",
+      format: 'json',
       content_type: context.query.content_type as string,
       token: context.query.token as string,
     }).toString();

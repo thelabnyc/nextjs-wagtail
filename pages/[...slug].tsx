@@ -1,4 +1,4 @@
-import { CMSPage, getCMSProps } from "../wagtailConf";
+import { CMSPage, getCMSProps } from '../wagtailConf';
 
 /* If you need to customize page:
 
