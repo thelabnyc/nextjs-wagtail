@@ -1,0 +1,14 @@
+image: node:12-slim
+
+before_script:
+  - npm ci
+
+deploy:
+  script:
+    - npm run lib:build
+    - npm publish
+  only:
+    - tags
+  artifacts:
+    paths:
+      - dist/
