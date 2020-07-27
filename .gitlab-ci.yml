@@ -3,9 +3,15 @@ image: node:12-slim
 before_script:
   - npm ci
 
+cache:
+  paths:
+    - node_modules/
+
+
 deploy:
   script:
     - npm run lib:build
+    - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
     - npm publish
   only:
     - tags
