@@ -16,30 +16,27 @@ interface WagtailMeta {
   first_published_at?: string;
 }
 
-export interface WagtailMetaDetail extends WagtailMeta {
+export type WagtailMetaDetail = WagtailMeta & {
   show_in_menus: boolean;
   seo_title: string;
   search_description: string;
   parent: WagtailPage | null;
-}
+};
 
-interface WagtailPageBase {
+interface WagtailPage {
   id: number;
   title: string;
-}
-
-export interface WagtailPage extends WagtailPageBase {
   meta: WagtailMeta;
 }
 
-export interface WagtailPageDetail extends WagtailPageBase {
+export type WagtailPageDetail<T = {}> = WagtailPage & {
   meta: WagtailMetaDetail;
-}
+} & T;
 
-export type WagtailProps = FoundWagtailProps | NotFoundWagtailProps;
+export type WagtailProps = WagtailPageProps | NotFoundWagtailProps;
 
-interface FoundWagtailProps {
-  wagtail: WagtailPageDetail;
+export interface WagtailPageProps<T = {}> {
+  wagtail: WagtailPageDetail<T>;
   status: 200;
 }
 
