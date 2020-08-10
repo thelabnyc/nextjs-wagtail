@@ -20,18 +20,21 @@ export type WagtailMetaDetail = WagtailMeta & {
   show_in_menus: boolean;
   seo_title: string;
   search_description: string;
-  parent: WagtailPage | null;
+  parent: WagtailPage<
+    Pick<WagtailMeta, 'type' | 'detail_url' | 'html_url'>
+  > | null;
 };
 
-interface WagtailPage {
+interface WagtailPage<Meta = WagtailMeta> {
   id: number;
   title: string;
-  meta: WagtailMeta;
+  meta: Meta;
 }
 
-export type WagtailPageDetail<T = {}> = WagtailPage & {
-  meta: WagtailMetaDetail;
-} & T;
+export type WagtailPageDetail<
+  OtherProperties = {},
+  Meta = WagtailMetaDetail
+> = WagtailPage<Meta> & OtherProperties;
 
 export type WagtailProps = WagtailPageProps | NotFoundWagtailProps;
 
