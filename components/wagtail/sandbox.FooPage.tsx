@@ -1,10 +1,10 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 const FooPage = (props: unknown) => {
   return (
     <div>
       hi Foo
-      <Link href="/[...slug]" as="/bar">
+      <Link href="/[[...slug]]" as="/bar">
         <a>Go to bar</a>
       </Link>
       <pre>
