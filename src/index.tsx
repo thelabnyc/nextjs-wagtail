@@ -55,7 +55,10 @@ export function createRouter({
     context: GetServerSidePropsContext,
     { overridePath }: GetCMSPropsOptions = {}
   ): Promise<GetServerSidePropsResult<WagtailProps>> => {
-    let path = overridePath ?? context.req.url?.split(/[#?]/)[0] ?? '';
+    let path =
+      overridePath ??
+      (context.req.url && context.req.url.split(/[#?]/)[0]) ??
+      '';
     const params = {
       html_path: path,
       site: siteId.toString(),
