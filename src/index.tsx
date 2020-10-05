@@ -37,10 +37,7 @@ export function createRouter({
 }: WagtailRouterConfig) {
   function CMSPage(props: WagtailProps) {
     if (props.status === 200) {
-      const CMSComponent: any = routeToComponent(
-        routes,
-        props.wagtail.meta.type
-      );
+      const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
 
       if (CMSComponent) {
         return <CMSComponent {...props} />;
@@ -76,7 +73,7 @@ export function createRouter({
     const fetchAdditionalData = routeToDataFunction(routes, data.meta.type);
     let extraProps: any;
     if (fetchAdditionalData) {
-      extraProps = await fetchAdditionalData();
+      extraProps = await fetchAdditionalData(context);
     }
 
     return { props: { ...extraProps, wagtail: data, status: 200 } };
@@ -99,7 +96,7 @@ export function createRouter({
       );
       let extraProps: any;
       if (fetchAdditionalData) {
-        extraProps = await fetchAdditionalData();
+        extraProps = await fetchAdditionalData(context);
       }
 
       return {
@@ -115,8 +112,8 @@ export function createRouter({
 
 export interface WagtailRoute {
   type: string;
-  component: React.ComponentType<unknown>;
-  fetchData?: () => Promise<unknown>;
+  component: React.ComponentType<any>;
+  fetchData?: (context: GetServerSidePropsContext) => Promise<any>;
 }
 
 export type WagtailRoutes = WagtailRoute[];
