@@ -4,7 +4,6 @@ import {
   GetServerSidePropsContext,
   GetServerSidePropsResult,
 } from 'next';
-import NextError from 'next/error';
 
 const routeToComponent = (routes: WagtailRoutes, pageType: string) => {
   const route = routes.find((route) => route.type === pageType);
@@ -22,6 +21,7 @@ export interface WagtailRouterConfig {
   domain: string;
   apiPath?: string;
   previewPath?: string;
+  NotFoundPage: React.ComponentType<any>;
 }
 
 export interface GetCMSPropsOptions {
@@ -34,17 +34,17 @@ export function createRouter({
   domain,
   apiPath = '/api/v2/pages/detail_by_path/',
   previewPath = '/api/v2/page_preview/1/',
+  NotFoundPage,
 }: WagtailRouterConfig) {
   function CMSPage(props: WagtailProps) {
     if (props.status === 200) {
       const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
-
       if (CMSComponent) {
         return <CMSComponent {...props} />;
       }
-      return <NextError statusCode={404} />;
+      return <NotFoundPage status={404} />;
     } else {
-      return <NextError statusCode={props.status} />;
+      return <NotFoundPage status={props.status} />;
     }
   }
 
@@ -63,8 +63,8 @@ export function createRouter({
     let url = new URL(domain + apiPath);
     url.search = new URLSearchParams(params).toString();
     const res = await fetch(url.toString());
-    // We should handle other status codes than 200 and 404!
-    if (res.status === 404) {
+    // If the cms can't find the page just 404
+    if (res.status >= 300) {
       context.res.statusCode = 404;
       return { props: { status: 404 } };
     }
