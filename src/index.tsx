@@ -21,11 +21,22 @@ export interface WagtailRouterConfig {
   domain: string;
   apiPath?: string;
   previewPath?: string;
-  NotFoundPage: React.ComponentType<any>;
+  redirectPath?: string;
+  NotFoundPage?: React.ComponentType<any>;
 }
 
 export interface GetCMSPropsOptions {
   overridePath?: string;
+}
+
+function DefaultNotFoundPage() {
+  return (
+    <div>
+      You've rendered a page without handling that page type! Pass your{' '}
+      <code>pages/_404.js</code> page into nextjs-wagtail to use your 404 page
+      here
+    </div>
+  );
 }
 
 export function createRouter({
@@ -34,28 +45,60 @@ export function createRouter({
   domain,
   apiPath = '/api/v2/pages/detail_by_path/',
   previewPath = '/api/v2/page_preview/1/',
-  NotFoundPage,
+  redirectPath = '/api/redirects',
+  NotFoundPage = DefaultNotFoundPage,
 }: WagtailRouterConfig) {
-  function CMSPage(props: WagtailProps) {
-    if (props.status === 200) {
-      const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
-      if (CMSComponent) {
-        return <CMSComponent {...props} />;
-      }
-      return <NotFoundPage status={404} />;
-    } else {
-      return <NotFoundPage status={props.status} />;
+  // async function findRedirectAt(
+  //   path: string
+  // ): Promise<
+  //   | {
+  //       old_path: string;
+  //       is_permanent: boolean;
+  //       site: number;
+  //       link: string;
+  //     }
+  //   | undefined
+  // > {
+  //   const url = new URL(domain + redirectPath);
+  //   url.search = new URLSearchParams({
+  //     old_path: path,
+  //     site_id: `${siteId}`,
+  //   }).toString();
+  //   const response = await fetch(url.toString());
+  //   const data = await response.json();
+
+  //   return data[0];
+  // }
+
+  function CMSPage(props: WagtailPageProps) {
+    const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
+    if (CMSComponent) {
+      return <CMSComponent {...props} />;
     }
+    return <NotFoundPage {...props} />;
   }
 
   const getCMSProps = async (
     context: GetServerSidePropsContext,
     { overridePath }: GetCMSPropsOptions = {}
-  ): Promise<GetServerSidePropsResult<WagtailProps>> => {
+  ): Promise<GetServerSidePropsResult<WagtailPageProps>> => {
     let path =
       overridePath ??
       (context.req.url && context.req.url.split(/[#?]/)[0]) ??
       '';
+
+    // If you find a redirect with that path, return the redirect
+    // Disabled for now because it would mean api calls per request
+    // const redirect = await findRedirectAt(path);
+    // if (redirect) {
+    //   return {
+    //     redirect: {
+    //       destination: redirect.link,
+    //       permanent: redirect.is_permanent,
+    //     },
+    //   };
+    // }
+
     const params = {
       html_path: path,
       site: siteId.toString(),
@@ -64,9 +107,8 @@ export function createRouter({
     url.search = new URLSearchParams(params).toString();
     const res = await fetch(url.toString());
     // If the cms can't find the page just 404
-    if (res.status >= 300) {
-      context.res.statusCode = 404;
-      return { props: { status: 404 } };
+    if (res.status >= 400) {
+      return { notFound: true };
     }
     const data: WagtailPageDetail = await res.json();
 
@@ -76,10 +118,12 @@ export function createRouter({
       extraProps = await fetchAdditionalData(context);
     }
 
-    return { props: { ...extraProps, wagtail: data, status: 200 } };
+    return { props: { ...extraProps, wagtail: data } };
   };
 
-  const getPreviewProps: GetServerSideProps<WagtailProps> = async (context) => {
+  const getPreviewProps: GetServerSideProps<WagtailPageProps> = async (
+    context
+  ) => {
     let url = new URL(domain + previewPath);
     url.search = new URLSearchParams({
       format: 'json',
@@ -100,10 +144,10 @@ export function createRouter({
       }
 
       return {
-        props: { ...extraProps, wagtail: previewData, status: 200 },
+        props: { ...extraProps, wagtail: previewData },
       };
     } catch (e) {
-      return { props: { wagtail: null, status: 404 } };
+      return { notFound: true };
     }
   };
 
@@ -146,14 +190,6 @@ export type WagtailPageDetail<
   Meta = WagtailMetaDetail
 > = WagtailPage<Meta> & OtherProperties;
 
-export type WagtailProps = WagtailPageProps | NotFoundWagtailProps;
-
 export interface WagtailPageProps<T = {}> {
   wagtail: WagtailPageDetail<T>;
-  status: 200;
-}
-
-// I want to just make this "number" but it makes WagtailProps not a discriminated union
-interface NotFoundWagtailProps {
-  status: 404 | 500;
 }
