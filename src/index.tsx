@@ -7,12 +7,20 @@ import {
 
 const routeToComponent = (routes: WagtailRoutes, pageType: string) => {
   const route = routes.find((route) => route.type === pageType);
-  return (route && route.component) || null;
+  return (route && route.component) ?? null;
 };
 
-const routeToDataFunction = (routes: WagtailRoutes, pageType: string) => {
+const routeToDataFunction = (
+  routes: WagtailRoutes,
+  pageType: string
+): WagtailDataFunction => {
   const route = routes.find((route) => route.type === pageType);
-  return (route && route.fetchData) || null;
+  return (
+    (route && route.fetchData) ??
+    async function (_context, wagtailPageProps) {
+      return { props: wagtailPageProps };
+    }
+  );
 };
 
 export interface WagtailRouterConfig {
@@ -21,7 +29,7 @@ export interface WagtailRouterConfig {
   domain: string;
   apiPath?: string;
   previewPath?: string;
-  redirectPath?: string;
+  // redirectPath?: string;
   NotFoundPage?: React.ComponentType<any>;
 }
 
@@ -45,7 +53,7 @@ export function createRouter({
   domain,
   apiPath = '/api/v2/pages/detail_by_path/',
   previewPath = '/api/v2/page_preview/1/',
-  redirectPath = '/api/redirects',
+  // redirectPath = '/api/redirects',
   NotFoundPage = DefaultNotFoundPage,
 }: WagtailRouterConfig) {
   // async function findRedirectAt(
@@ -113,12 +121,7 @@ export function createRouter({
     const data: WagtailPageDetail = await res.json();
 
     const fetchAdditionalData = routeToDataFunction(routes, data.meta.type);
-    let extraProps: any;
-    if (fetchAdditionalData) {
-      extraProps = await fetchAdditionalData(context);
-    }
-
-    return { props: { ...extraProps, wagtail: data } };
+    return fetchAdditionalData(context, { wagtail: data });
   };
 
   const getPreviewProps: GetServerSideProps<WagtailPageProps> = async (
@@ -138,14 +141,9 @@ export function createRouter({
         routes,
         previewData.meta.type
       );
-      let extraProps: any;
-      if (fetchAdditionalData) {
-        extraProps = await fetchAdditionalData(context);
-      }
-
-      return {
-        props: { ...extraProps, wagtail: previewData },
-      };
+      return fetchAdditionalData(context, {
+        wagtail: previewData,
+      });
     } catch (e) {
       return { notFound: true };
     }
@@ -154,10 +152,15 @@ export function createRouter({
   return { CMSPage, getCMSProps, getPreviewProps };
 }
 
+type WagtailDataFunction = (
+  context: GetServerSidePropsContext,
+  wagtailProps: WagtailPageProps
+) => Promise<GetServerSidePropsResult<any>>;
+
 export interface WagtailRoute {
   type: string;
   component: React.ComponentType<any>;
-  fetchData?: (context: GetServerSidePropsContext) => Promise<any>;
+  fetchData?: WagtailDataFunction;
 }
 
 export type WagtailRoutes = WagtailRoute[];
