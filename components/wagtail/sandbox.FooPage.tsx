@@ -15,7 +15,7 @@ const FooPage = (props: unknown) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps( ) {
   return {
     myProp: 2,
   };

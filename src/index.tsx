@@ -29,7 +29,7 @@ export interface WagtailRouterConfig {
   domain: string;
   apiPath?: string;
   previewPath?: string;
-  // redirectPath?: string;
+  redirectPath?: string;
   NotFoundPage?: React.ComponentType<any>;
 }
 
@@ -53,30 +53,30 @@ export function createRouter({
   domain,
   apiPath = '/api/v2/pages/detail_by_path/',
   previewPath = '/api/v2/page_preview/1/',
-  // redirectPath = '/api/redirects',
+  redirectPath = '/api/redirects',
   NotFoundPage = DefaultNotFoundPage,
 }: WagtailRouterConfig) {
-  // async function findRedirectAt(
-  //   path: string
-  // ): Promise<
-  //   | {
-  //       old_path: string;
-  //       is_permanent: boolean;
-  //       site: number;
-  //       link: string;
-  //     }
-  //   | undefined
-  // > {
-  //   const url = new URL(domain + redirectPath);
-  //   url.search = new URLSearchParams({
-  //     old_path: path,
-  //     site_id: `${siteId}`,
-  //   }).toString();
-  //   const response = await fetch(url.toString());
-  //   const data = await response.json();
+  async function findRedirectAt(
+    path: string
+  ): Promise<
+    | {
+        old_path: string;
+        is_permanent: boolean;
+        site: number;
+        link: string;
+      }
+    | undefined
+  > {
+    const url = new URL(domain + redirectPath);
+    url.search = new URLSearchParams({
+      old_path: path,
+      site_id: `${siteId}`,
+    }).toString();
+    const response = await fetch(url.toString());
+    const data = await response.json();
 
-  //   return data[0];
-  // }
+    return data[0];
+  }
 
   function CMSPage(props: WagtailPageProps) {
     const CMSComponent = routeToComponent(routes, props.wagtail.meta.type);
@@ -95,17 +95,6 @@ export function createRouter({
       (context.req.url && context.req.url.split(/[#?]/)[0]) ??
       '';
 
-    // If you find a redirect with that path, return the redirect
-    // Disabled for now because it would mean api calls per request
-    // const redirect = await findRedirectAt(path);
-    // if (redirect) {
-    //   return {
-    //     redirect: {
-    //       destination: redirect.link,
-    //       permanent: redirect.is_permanent,
-    //     },
-    //   };
-    // }
 
     const params = {
       html_path: path,
@@ -114,6 +103,18 @@ export function createRouter({
     let url = new URL(domain + apiPath);
     url.search = new URLSearchParams(params).toString();
     const res = await fetch(url.toString());
+    if (res.status === 404 ) {
+      // If you find a redirect with that path, return the redirect
+      const redirect = await findRedirectAt(path);
+      if (redirect) {
+        return {
+          redirect: {
+            destination: redirect.link,
+            permanent: redirect.is_permanent,
+          },
+        };
+      }
+    }
     // If the cms can't find the page just 404
     if (res.status >= 400) {
       return { notFound: true };
