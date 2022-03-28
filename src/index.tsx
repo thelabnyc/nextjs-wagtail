@@ -90,11 +90,7 @@ export function createRouter({
     context: GetServerSidePropsContext,
     { overridePath }: GetCMSPropsOptions = {}
   ): Promise<GetServerSidePropsResult<WagtailPageProps>> => {
-    let path =
-      overridePath ??
-      (context.req.url && context.req.url.split(/[#?]/)[0]) ??
-      '';
-
+    let path = overridePath ?? context.resolvedUrl.split(/[#?]/)[0] ?? '';
 
     const params = {
       html_path: path,
@@ -103,7 +99,7 @@ export function createRouter({
     let url = new URL(domain + apiPath);
     url.search = new URLSearchParams(params).toString();
     const res = await fetch(url.toString());
-    if (res.status === 404 ) {
+    if (res.status === 404) {
       // If you find a redirect with that path, return the redirect
       const redirect = await findRedirectAt(path);
       if (redirect) {
@@ -152,10 +148,9 @@ export function createRouter({
 
   return { CMSPage, getCMSProps, getPreviewProps };
 }
-
 type WagtailDataFunction = (
   context: GetServerSidePropsContext,
-  wagtailProps: WagtailPageProps
+  wagtailProps: any
 ) => Promise<GetServerSidePropsResult<any>>;
 
 export interface WagtailRoute {
