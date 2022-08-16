@@ -17,8 +17,11 @@ const routeToDataFunction = (
   const route = routes.find((route) => route.type === pageType);
   return (
     (route && route.fetchData) ??
-    async function (_context, wagtailPageProps) {
-      return { props: wagtailPageProps };
+    async function (_context, wagtailPageProps, apiResponse) {
+      return {
+        props: wagtailPageProps,
+        apiResponse: apiResponse,
+      };
     }
   );
 };
@@ -89,7 +92,7 @@ export function createRouter({
   const getCMSProps = async (
     context: GetServerSidePropsContext,
     { overridePath }: GetCMSPropsOptions = {}
-  ): Promise<GetServerSidePropsResult<WagtailPageProps>> => {
+  ): Promise<ServerSidePropsResultWithAPIResponse<WagtailPageProps>> => {
     let path = overridePath ?? context.resolvedUrl.split(/[#?]/)[0] ?? '';
 
     const params = {
@@ -118,7 +121,7 @@ export function createRouter({
     const data: WagtailPageDetail = await res.json();
 
     const fetchAdditionalData = routeToDataFunction(routes, data.meta.type);
-    return fetchAdditionalData(context, { wagtail: data });
+    return fetchAdditionalData(context, { wagtail: data }, res);
   };
 
   const getPreviewProps: GetServerSideProps<WagtailPageProps> = async (
@@ -138,9 +141,13 @@ export function createRouter({
         routes,
         previewData.meta.type
       );
-      return fetchAdditionalData(context, {
-        wagtail: previewData,
-      });
+      return fetchAdditionalData(
+        context,
+        {
+          wagtail: previewData,
+        },
+        previewDataResponse
+      );
     } catch (e) {
       return { notFound: true };
     }
@@ -148,10 +155,16 @@ export function createRouter({
 
   return { CMSPage, getCMSProps, getPreviewProps };
 }
+
+type ServerSidePropsResultWithAPIResponse<T> = GetServerSidePropsResult<T> & {
+  apiResponse?: Response;
+};
+
 type WagtailDataFunction = (
   context: GetServerSidePropsContext,
-  wagtailProps: any
-) => Promise<GetServerSidePropsResult<any>>;
+  wagtailProps: any,
+  apiResponse: Response
+) => Promise<ServerSidePropsResultWithAPIResponse<any>>;
 
 export interface WagtailRoute {
   type: string;
