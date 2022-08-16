@@ -5,7 +5,7 @@
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "scripts": {
     "dev": "next",
     "app:build": "next build",
