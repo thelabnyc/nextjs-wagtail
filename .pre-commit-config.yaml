@@ -1,0 +1,28 @@
+repos:
+  - repo: https://gitlab.com/thelabnyc/thelab-pre-commit-hooks
+    rev: r0.0.2
+    hooks:
+      - id: update-copyright-year
+      - id: npm-install
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+        args: [--unsafe]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/pycontribs/mirrors-prettier
+    rev: "v3.3.3"
+    hooks:
+      - id: prettier
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+      - id: markdownlint
