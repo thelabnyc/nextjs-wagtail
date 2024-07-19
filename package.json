@@ -23,12 +23,12 @@
   "devDependencies": {
     "@thelabnyc/standards": "^0.2.1",
     "@types/node": "^14.18.63",
-    "@types/react": "^17.0.80",
-    "@types/react-dom": "^17.0.25",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "microbundle": "^0.15.1",
     "next": "^12.3.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
