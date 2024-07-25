@@ -1,4 +1,4 @@
-image: node:12-slim
+image: node:20-slim
 
 before_script:
   - npm ci
