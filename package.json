@@ -21,7 +21,7 @@
     "lib:build": "microbundle --tsconfig ./tsconfig.lib.json --jsx React.createElement"
   },
   "devDependencies": {
-    "@thelabnyc/standards": "^0.3.3",
+    "@thelabnyc/standards": "^0.3.4",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
