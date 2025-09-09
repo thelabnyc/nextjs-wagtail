@@ -1,4 +1,4 @@
-image: node:20-slim@sha256:a43bd144ba70fc15461d202dfe045c568f21c3cb71a563eec400a5d78e6e8a0a
+image: node:20-slim@sha256:c2003782d629fdd0b2ca54b469069388d013304843034ba1b4fdf65040ed8f65
 
 before_script:
   - npm ci
