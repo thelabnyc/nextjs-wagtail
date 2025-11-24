@@ -1,23 +1,32 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
 image: node:24-slim@sha256:0afb7822fac7bf9d7c1bf3b6e6c496dee6b2b64d8dfa365501a3c68e8eba94b2
 
-before_script:
-  - npm ci
-
-cache:
-  paths:
-    - node_modules/
+include:
+  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.6.0
 
 test:
   script:
+    - npm ci
     - npm run lib:build
+  cache:
+    paths:
+      - node_modules/
 
 deploy:
   script:
+    - npm ci
     - npm run lib:build
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
     - npm publish
   only:
     - tags
+  cache:
+    paths:
+      - node_modules/
   artifacts:
     paths:
       - dist/
