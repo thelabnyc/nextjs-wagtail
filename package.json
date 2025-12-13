@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@thelabnyc/standards": "0.5.0",
-    "@types/node": "24.10.2",
+    "@types/node": "24.10.3",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
     "microbundle": "0.15.1",
