@@ -4,12 +4,12 @@ Integrates "headless" Wagtail CMS with NextJS
 
 ## Features
 
--   Match Wagtail Page Types to React Components
--   Support Wagtail's draft feature
--   Support Wagtail's SEO meta tag features
--   Supports proper 404, 301, and 302 status codes
--   Show custom 404 page when no CMS page
--   Support Multiple Wagtail sites
+- Match Wagtail Page Types to React Components
+- Support Wagtail's draft feature
+- Support Wagtail's SEO meta tag features
+- Supports proper 404, 301, and 302 status codes
+- Show custom 404 page when no CMS page
+- Support Multiple Wagtail sites
 
 ## Development
 
