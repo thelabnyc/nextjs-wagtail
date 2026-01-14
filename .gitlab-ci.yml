@@ -3,7 +3,7 @@ workflow:
     - if: $CI_COMMIT_REF_PROTECTED == "true"
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
-image: node:24-slim@sha256:7326fb2dbdce998edd72140946851be64ef4a643e8715e138ca467e8e9d92c99
+image: node:24-slim@sha256:0207704d1339be2e835577e970352926f5cf630b67356087f28a9b988ba90a82
 
 include:
   - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.6.2
