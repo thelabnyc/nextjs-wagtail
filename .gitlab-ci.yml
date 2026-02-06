@@ -6,7 +6,7 @@ workflow:
 image: node:24-slim@sha256:4660b1ca8b28d6d1906fd644abe34b2ed81d15434d26d845ef0aced307cf4b6f
 
 include:
-  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.7.0
+  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.7.1
 
 test:
   script:
