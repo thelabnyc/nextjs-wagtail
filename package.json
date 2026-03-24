@@ -33,5 +33,12 @@
   },
   "peerDependencies": {
     "next": ">=14.2.28"
+  },
+  "overrides": {
+    "rollup-plugin-typescript2": {
+      "@rollup/pluginutils": {
+        "picomatch": "2.3.1"
+      }
+    }
   }
 }
