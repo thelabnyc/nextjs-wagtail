@@ -10,7 +10,7 @@ default:
 image: node:24-slim@sha256:2c87ef9bd3c6a3bd4b472b4bec2ce9d16354b0c574f736c476489d09f560a203
 
 include:
-  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.8.4
+  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.9.0
 
 test:
   script:
